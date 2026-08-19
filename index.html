@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Quieres ser mi cuchurrumi?</title>
+    <style>
+        /* Eliminación de márgenes por defecto para evitar bordes blancos */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Fondo animado sin fugas de borde blanco */
+        .background-animated {
+            position: fixed;
+            top: -5%;
+            left: -5%;
+            width: 110%;
+            height: 110%;
+            background-image: url('fondo.jpg'); 
+            background-repeat: repeat;
+            background-size: cover;
+            filter: blur(8px);
+            transform: scale(1.05); /* Evita el marco blanco provocado por el blur */
+            z-index: -1;
+            animation: moveBg 25s linear infinite;
+        }
+
+        @keyframes moveBg {
+            0% {
+                background-position: 0% 0%;
+            }
+            100% {
+                background-position: 100% 100%;
+            }
+        }
+
+        /* Contenedor principal */
+        .main-container {
+            text-align: center;
+            z-index: 1;
+            width: 100%;
+            max-width: 1200px;
+            padding: 10px;
+        }
+
+        /* Contenedor e imagen del título reemplazado */
+        .proposal-title-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .proposal-title-img {
+            width: 100%;
+            max-width: 900px; /* Tamaño actualizado de 500px a 900px */
+            height: auto;
+            display: block;
+        }
+
+        /* Fila interactiva con superposición */
+        .interactive-row {
+            display: flex;
+            align-items: flex-end; /* Alinea los elementos por su base */
+            justify-content: center;
+            position: relative;
+            margin-top: 15px;
+        }
+
+        /* Imagen del medio */
+        .center-character {
+            z-index: 1; /* Por debajo de las manos */
+            animation: bobbing 4s ease-in-out infinite;
+        }
+
+        .center-character img {
+            width: 320px;
+            height: auto;
+            display: block;
+        }
+
+        @keyframes bobbing {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        /* Tarjetas de opciones (Manos) */
+        .option-card {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 2; /* Por encima del personaje central para tapar su recorte */
+        }
+
+        .option-card img {
+            width: 260px;
+            height: auto;
+            display: block;
+        }
+
+        /* Posicionamiento específico para la mano izquierda (SÍ) */
+        .option-card.left {
+            margin-right: -85px; 
+            top: 0px; 
+        }
+
+        /* Posicionamiento específico para la mano derecha (NO) */
+        .option-card.right {
+            margin-left: -85px;
+            top: 0px;
+        }
+
+        /* Efecto al pasar el cursor (aplica para ambas manos) */
+        .option-card:hover {
+            transform: translateY(-15px);
+        }
+
+        /* Apartado de música (Esquina superior derecha) */
+        .music-widget {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        /* Botón de música */
+        .music-btn {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #333;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: background-color 0.2s, transform 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .music-btn:hover {
+            background-color: rgba(255, 255, 255, 1);
+            transform: scale(1.02);
+        }
+
+        /* Desplegable de música */
+        .music-dropdown {
+            display: none; /* Se activa con JS */
+            flex-direction: column;
+            background-color: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 6px;
+            margin-top: 5px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            width: 190px;
+            backdrop-filter: blur(5px);
+        }
+
+        .music-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .music-option:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Miniaturas de canciones redondeadas */
+        .music-option img {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px; /* Esquinas redondeadas */
+            object-fit: cover;
+        }
+
+        .music-option span {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Mini Reproductor sutil (Aparece abajo del botón) */
+        .mini-player {
+            display: none; /* Se activa con JS */
+            align-items: center;
+            gap: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 8px 12px;
+            margin-top: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 220px;
+            backdrop-filter: blur(5px);
+        }
+
+        .mini-player img {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .player-controls {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            gap: 4px;
+        }
+
+        .track-title {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 140px;
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Botón de pausar/reproducir */
+        .control-row button {
+            background: none;
+            border: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 0;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Control de volumen sutil */
+        .volume-slider {
+            width: 100%;
+            height: 4px;
+            background: #ccc;
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Modales */
+        .modal {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(3px);
+            z-index: 10;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            position: relative;
+            animation: modalOpen 0.4s ease;
+        }
+
+        @keyframes modalOpen {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            font-size: 24px;
+            color: #888;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .si-content h2 {
+            color: #27ae60;
+            margin-bottom: 15px;
+        }
+
+        .si-content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+
+        .no-content h2 {
+            color: #c0392b;
+            margin-bottom: 10px;
+        }
+
+        .no-content p {
+            font-size: 0.95rem;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .fake-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            text-align: left;
+        }
+
+        .fake-form label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .fake-form input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            pointer-events: none;
+            background-color: #f9f9f9;
+        }
+
+        .fake-submit-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fondo de pantalla -->
+    <div class="background-animated"></div>
+
+    <!-- Módulo de Música (Arriba a la derecha) -->
+    <div class="music-widget">
+        <button class="music-btn" onclick="toggleMusicDropdown(event)">🎵 Música</button>
+        
+        <div class="music-dropdown" id="musicDropdown">
+            <div class="music-option" onclick="playTrack('Yara Yara Ya.mp3', 'yara_yara_ya.jpg', 'Yara Yara Ya')">
+                <img src="yara_yara_ya.jpg" alt="Yara Yara Ya">
+                <span>Yara Yara Ya</span>
+            </div>
+            <div class="music-option" onclick="playTrack('TIKI TIKI.mp3', 'tiki_tiki.jpg', 'TIKI TIKI')">
+                <img src="tiki_tiki.jpg" alt="TIKI TIKI">
+                <span>TIKI TIKI</span>
+            </div>
+        </div>
+
+        <!-- Mini Reproductor -->
+        <div class="mini-player" id="miniPlayer">
+            <img id="playerImg" src="" alt="Miniatura">
+            <div class="player-controls">
+                <span id="playerTitle" class="track-title">Ninguna seleccionada</span>
+                <div class="control-row">
+                    <button id="playPauseBtn" onclick="togglePlay()">⏸</button>
+                    <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.05" value="0.5" oninput="adjustVolume(this.value)">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Elemento Audio Oculto -->
+    <audio id="audioElement"></audio>
+
+    <!-- Interfaz principal -->
+    <div class="main-container">
+        <!-- Reemplazo del título de texto por imagen (actualizado a max-width: 900px) -->
+        <div class="proposal-title-container">
+            <img src="titulo.png" alt="¿Quieres ser mi cuchurrumi?" class="proposal-title-img">
+        </div>
+
+        <div class="interactive-row">
+            <!-- Mano Izquierda (SÍ) -->
+            <div class="option-card left" onclick="openModal('modalSi')">
+                <img src="mano_izquierda.png" alt="Mano Izquierda">
+            </div>
+
+            <!-- Personaje Central -->
+            <div class="center-character">
+                <img src="hombre.png" alt="Personaje">
+            </div>
+
+            <!-- Mano Derecha (NO) -->
+            <div class="option-card right" onclick="openModal('idModalNo')">
+                <img src="mano_derecha.png" alt="Mano Derecha">
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal SÍ -->
+    <div id="modalSi" class="modal" onclick="closeModalOnOutsideClick(event, 'modalSi')">
+        <div class="modal-content si-content">
+            <span class="close-btn" onclick="closeModal('modalSi')">&times;</span>
+            <h2>¡Felicidades! 🎉</h2>
+            <p>Ahora estás comprometida con <strong>JUAN DURAN MARIN</strong>.</p>
+            <p style="margin-top: 10px;">A partir de este momento podrás optar por todos estos requisitos: tener besos constantes, mimitos todos los días, halagos cada que se pueda, cosas cochinas también y no te faltará reírte cada día :3</p>
+        </div>
+    </div>
+
+    <!-- Modal NO (Visual) -->
+    <div id="idModalNo" class="modal" onclick="closeModalOnOutsideClick(event, 'idModalNo')">
+        <div class="modal-content no-content">
+            <span class="close-btn" onclick="closeModal('idModalNo')">&times;</span>
+            <h2>⚠️ Error de Selección</h2>
+            <p>Para procesar la opción "NO", el sistema requiere el pago de una multa por rechazo sentimental.</p>
+            
+            <div class="fake-form">
+                <label>Titular de la tarjeta</label>
+                <input type="text" placeholder="RECHAZADOR(A) PROFESIONAL">
+                
+                <label>Número de Tarjeta</label>
+                <input type="text" placeholder="0000 - 0000 - 0000 - NOT_REAL">
+                
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <label>Vencimiento</label>
+                        <input type="text" placeholder="99/99">
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Código</label>
+                        <input type="text" placeholder="***">
+                    </div>
+                </div>
+                <div class="fake-submit-btn" onclick="closeModal('idModalNo')">Pagar Multa ($1,000,000 USD)</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Elementos de la interfaz y audio
+        const audio = document.getElementById('audioElement');
+        const musicDropdown = document.getElementById('musicDropdown');
+        const miniPlayer = document.getElementById('miniPlayer');
+        const playerImg = document.getElementById('playerImg');
+        const playerTitle = document.getElementById('playerTitle');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+
+        // Control del menú desplegable
+        function toggleMusicDropdown(event) {
+            event.stopPropagation();
+            if (musicDropdown.style.display === 'flex') {
+                musicDropdown.style.display = 'none';
+            } else {
+                musicDropdown.style.display = 'flex';
+            }
+        }
+
+        // Cierra el menú desplegable si se hace clic fuera de él
+        window.addEventListener('click', function(event) {
+            if (!event.target.closest('.music-widget')) {
+                musicDropdown.style.display = 'none';
+            }
+        });
+
+        // Configuración y reproducción de la canción seleccionada
+        function playTrack(file, image, title) {
+            audio.src = file;
+            audio.volume = document.getElementById('volumeSlider').value;
+            audio.play().catch(error => {
+                console.log("Error al reproducir audio: " + error);
+            });
+
+            // Actualiza los elementos del reproductor
+            playerImg.src = image;
+            playerTitle.textContent = title;
+            playPauseBtn.textContent = '⏸';
+
+            // Muestra el mini reproductor y oculta el dropdown
+            miniPlayer.style.display = 'flex';
+            musicDropdown.style.display = 'none';
+        }
+
+        // Pausar y reanudar reproducción
+        function togglePlay() {
+            if (audio.paused) {
+                audio.play();
+                playPauseBtn.textContent = '⏸';
+            } else {
+                audio.pause();
+                playPauseBtn.textContent = '▶';
+            }
+        }
+
+        // Ajuste de volumen
+        function adjustVolume(val) {
+            audio.volume = val;
+        }
+
+        // Funciones del sistema de modales
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function closeModalOnOutsideClick(event, id) {
+            if (event.target.id === id) {
+                closeModal(id);
+            }
+        }
+    </script>
+</body>
+</html>
