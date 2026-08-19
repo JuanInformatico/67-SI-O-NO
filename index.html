@@ -55,6 +55,10 @@
             width: 100%;
             max-width: 1200px;
             padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Contenedor e imagen del título reemplazado */
@@ -62,11 +66,12 @@
             display: flex;
             justify-content: center;
             margin-bottom: 15px;
+            width: 100%;
         }
 
         .proposal-title-img {
             width: 100%;
-            max-width: 900px; /* Tamaño actualizado de 500px a 900px */
+            max-width: 900px; /* Tamaño máximo en pantallas grandes */
             height: auto;
             display: block;
         }
@@ -78,6 +83,7 @@
             justify-content: center;
             position: relative;
             margin-top: 15px;
+            width: 100%;
         }
 
         /* Imagen del medio */
@@ -87,7 +93,7 @@
         }
 
         .center-character img {
-            width: 320px;
+            width: 320px; /* Tamaño por defecto en escritorio */
             height: auto;
             display: block;
         }
@@ -110,20 +116,20 @@
         }
 
         .option-card img {
-            width: 260px;
+            width: 260px; /* Tamaño por defecto en escritorio */
             height: auto;
             display: block;
         }
 
         /* Posicionamiento específico para la mano izquierda (SÍ) */
         .option-card.left {
-            margin-right: -85px; 
+            margin-right: -85px; /* Superposición por defecto */
             top: 0px; 
         }
 
         /* Posicionamiento específico para la mano derecha (NO) */
         .option-card.right {
-            margin-left: -85px;
+            margin-left: -85px; /* Superposición por defecto */
             top: 0px;
         }
 
@@ -164,7 +170,7 @@
 
         /* Desplegable de música */
         .music-dropdown {
-            display: none; /* Se activa con JS */
+            display: none; 
             flex-direction: column;
             background-color: rgba(255, 255, 255, 0.95);
             border: 1px solid rgba(0, 0, 0, 0.1);
@@ -194,7 +200,7 @@
         .music-option img {
             width: 45px;
             height: 45px;
-            border-radius: 8px; /* Esquinas redondeadas */
+            border-radius: 8px; 
             object-fit: cover;
         }
 
@@ -204,9 +210,9 @@
             color: #333;
         }
 
-        /* Mini Reproductor sutil (Aparece abajo del botón) */
+        /* Mini Reproductor sutil */
         .mini-player {
-            display: none; /* Se activa con JS */
+            display: none; 
             align-items: center;
             gap: 10px;
             background-color: rgba(255, 255, 255, 0.9);
@@ -249,7 +255,6 @@
             gap: 8px;
         }
 
-        /* Botón de pausar/reproducir */
         .control-row button {
             background: none;
             border: none;
@@ -262,7 +267,6 @@
             justify-content: center;
         }
 
-        /* Control de volumen sutil */
         .volume-slider {
             width: 100%;
             height: 4px;
@@ -371,6 +375,97 @@
             cursor: pointer;
             margin-top: 10px;
             text-align: center;
+        }
+
+        /* ==================== MEDIA QUERIES (RESPONSIVO) ==================== */
+
+        /* Tablets y pantallas medianas (menos de 768px de ancho) */
+        @media (max-width: 768px) {
+            .proposal-title-img {
+                max-width: 85%; /* Se reduce el título */
+            }
+
+            /* Reducción proporcional del tamaño de las imágenes del meme */
+            .center-character img {
+                width: 230px; 
+            }
+
+            .option-card img {
+                width: 180px; 
+            }
+
+            /* Ajuste proporcional del solape para que mantengan la unión */
+            .option-card.left {
+                margin-right: -60px; 
+            }
+
+            .option-card.right {
+                margin-left: -60px; 
+            }
+
+            /* Widget de música más compacto */
+            .music-widget {
+                top: 12px;
+                right: 12px;
+            }
+
+            .music-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+
+            .music-dropdown {
+                width: 170px;
+            }
+
+            .mini-player {
+                width: 190px;
+            }
+        }
+
+        /* Teléfonos móviles pequeños (menos de 480px de ancho) */
+        @media (max-width: 480px) {
+            .proposal-title-img {
+                max-width: 95%; 
+            }
+
+            /* Reducción más acentuada para pantallas muy estrechas */
+            .center-character img {
+                width: 155px; 
+            }
+
+            .option-card img {
+                width: 125px; 
+            }
+
+            /* Reducción del solape para evitar que se desborde o se separe */
+            .option-card.left {
+                margin-right: -42px; 
+            }
+
+            .option-card.right {
+                margin-left: -42px; 
+            }
+
+            /* Ubicación y dimensiones del reproductor en móviles */
+            .music-widget {
+                top: 10px;
+                right: 10px;
+            }
+
+            .music-dropdown {
+                width: 160px;
+            }
+
+            .mini-player {
+                width: 180px;
+                padding: 6px 8px;
+            }
+
+            .mini-player img {
+                width: 35px;
+                height: 35px;
+            }
         }
     </style>
 </head>
