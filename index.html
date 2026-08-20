@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>¿Quieres ser mi cuchurrumi?</title>
     <style>
+        /* Desactivar selección de texto y comportamientos táctiles por defecto */
+        * {
+            -webkit-tap-highlight-color: transparent; /* Quita el destello azul al tocar en móviles */
+            user-select: none; /* Desactiva la selección de texto */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
         /* Eliminación de márgenes por defecto para evitar bordes blancos */
         html, body {
             margin: 0;
@@ -23,6 +32,12 @@
             position: relative;
         }
 
+        /* Bloquear arrastre nativo en todas las imágenes */
+        img {
+            -webkit-user-drag: none;
+            user-drag: none;
+        }
+
         /* Fondo animado sin fugas de borde blanco */
         .background-animated {
             position: fixed;
@@ -37,6 +52,7 @@
             transform: scale(1.05); /* Evita el marco blanco provocado por el blur */
             z-index: -1;
             animation: moveBg 25s linear infinite;
+            pointer-events: none; /* Evita que interfiera con los clics */
         }
 
         @keyframes moveBg {
@@ -133,8 +149,9 @@
             top: 0px;
         }
 
-        /* Efecto al pasar el cursor (aplica para ambas manos) */
-        .option-card:hover {
+        /* Efecto al pasar el cursor o al mantener pulsado en touch */
+        .option-card:hover,
+        .option-card.lifted {
             transform: translateY(-15px);
         }
 
@@ -480,18 +497,18 @@
         
         <div class="music-dropdown" id="musicDropdown">
             <div class="music-option" onclick="playTrack('Yara Yara Ya.mp3', 'yara_yara_ya.jpg', 'Yara Yara Ya')">
-                <img src="yara_yara_ya.jpg" alt="Yara Yara Ya">
+                <img src="yara_yara_ya.jpg" alt="Yara Yara Ya" draggable="false">
                 <span>Yara Yara Ya</span>
             </div>
             <div class="music-option" onclick="playTrack('TIKI TIKI.mp3', 'tiki_tiki.jpg', 'TIKI TIKI')">
-                <img src="tiki_tiki.jpg" alt="TIKI TIKI">
+                <img src="tiki_tiki.jpg" alt="TIKI TIKI" draggable="false">
                 <span>TIKI TIKI</span>
             </div>
         </div>
 
         <!-- Mini Reproductor -->
         <div class="mini-player" id="miniPlayer">
-            <img id="playerImg" src="" alt="Miniatura">
+            <img id="playerImg" src="" alt="Miniatura" draggable="false">
             <div class="player-controls">
                 <span id="playerTitle" class="track-title">Ninguna seleccionada</span>
                 <div class="control-row">
@@ -509,23 +526,23 @@
     <div class="main-container">
         <!-- Reemplazo del título de texto por imagen (actualizado a max-width: 900px) -->
         <div class="proposal-title-container">
-            <img src="titulo.png" alt="¿Quieres ser mi cuchurrumi?" class="proposal-title-img">
+            <img src="titulo.png" alt="¿Quieres ser mi cuchurrumi?" class="proposal-title-img" draggable="false">
         </div>
 
         <div class="interactive-row">
             <!-- Mano Izquierda (SÍ) -->
             <div class="option-card left" onclick="openModal('modalSi')">
-                <img src="mano_izquierda.png" alt="Mano Izquierda">
+                <img src="mano_izquierda.png" alt="Mano Izquierda" draggable="false">
             </div>
 
             <!-- Personaje Central -->
             <div class="center-character">
-                <img src="hombre.png" alt="Personaje">
+                <img src="hombre.png" alt="Personaje" draggable="false">
             </div>
 
             <!-- Mano Derecha (NO) -->
             <div class="option-card right" onclick="openModal('idModalNo')">
-                <img src="mano_derecha.png" alt="Mano Derecha">
+                <img src="mano_derecha.png" alt="Mano Derecha" draggable="false">
             </div>
         </div>
     </div>
@@ -570,7 +587,40 @@
     </div>
 
     <script>
-        // Elementos de la interfaz y audio
+        // --- Bloqueo de Interacción ---
+        
+        // Desactiva el menú contextual de clic derecho
+        document.addEventListener('contextmenu', function(event) {
+            event.preventDefault();
+        });
+
+        // Desactiva el arrastre de elementos en el navegador
+        document.addEventListener('dragstart', function(event) {
+            event.preventDefault();
+        });
+
+        // --- Gestión del Soporte Táctil (Touch) ---
+        const cards = document.querySelectorAll('.option-card');
+
+        cards.forEach(card => {
+            // Activa el efecto de elevación al tocar
+            card.addEventListener('touchstart', function() {
+                card.classList.add('lifted');
+            }, { passive: true });
+
+            // Desactiva el efecto al levantar el dedo
+            card.addEventListener('touchend', function() {
+                card.classList.remove('lifted');
+            }, { passive: true });
+
+            // Desactiva el efecto si el toque se cancela (ej. scroll de sistema)
+            card.addEventListener('touchcancel', function() {
+                card.classList.remove('lifted');
+            }, { passive: true });
+        });
+
+
+        // --- Elementos de la interfaz y audio ---
         const audio = document.getElementById('audioElement');
         const musicDropdown = document.getElementById('musicDropdown');
         const miniPlayer = document.getElementById('miniPlayer');
@@ -644,6 +694,7 @@
             }
         }
 
+        // Permite cerrar el modal haciendo clic fuera de la caja de contenido
         function closeModalOnOutsideClick(event, id) {
             if (event.target.id === id) {
                 closeModal(id);
