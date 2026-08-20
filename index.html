@@ -14,6 +14,14 @@
             -ms-user-select: none;
         }
 
+        /* Permitir la selección e interacción en campos de entrada de datos */
+        input {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+        }
+
         /* Eliminación de márgenes por defecto para evitar bordes blancos */
         html, body {
             margin: 0;
@@ -38,29 +46,29 @@
             user-drag: none;
         }
 
-        /* Fondo animado sin fugas de borde blanco */
+        /* Fondo animado en bucle de izquierda a derecha (alternate) */
         .background-animated {
             position: fixed;
-            top: -5%;
-            left: -5%;
-            width: 110%;
-            height: 110%;
+            top: -10%;
+            left: -10%;
+            width: 120%; /* Mayor cobertura para permitir el deslizamiento seguro */
+            height: 120%;
             background-image: url('fondo.jpg'); 
-            background-repeat: repeat;
+            background-repeat: no-repeat;
             background-size: cover;
             filter: blur(8px);
-            transform: scale(1.05); /* Evita el marco blanco provocado por el blur */
             z-index: -1;
-            animation: moveBg 25s linear infinite;
+            /* La animación corre de ida y vuelta de manera infinita y suave */
+            animation: moveBg 25s ease-in-out infinite alternate;
             pointer-events: none; /* Evita que interfiera con los clics */
         }
 
         @keyframes moveBg {
             0% {
-                background-position: 0% 0%;
+                transform: translateX(-4%); /* Desplazamiento inicial hacia la izquierda */
             }
             100% {
-                background-position: 100% 100%;
+                transform: translateX(4%); /* Desplazamiento final hacia la derecha */
             }
         }
 
@@ -293,6 +301,27 @@
             cursor: pointer;
         }
 
+        /* Firma de autoría (Esquina inferior izquierda) */
+        .footer-signature {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            z-index: 100;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #000000;
+            text-decoration: none;
+            background: none;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+            cursor: pointer;
+        }
+
+        .footer-signature:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
         /* Modales */
         .modal {
             display: none; 
@@ -303,7 +332,7 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(3px);
-            z-index: 10;
+            z-index: 1000; /* Prioridad de capa para cubrir firma y reproductor */
             justify-content: center;
             align-items: center;
         }
@@ -339,7 +368,7 @@
         }
 
         .si-content h2 {
-            color: #27ae60;
+            color: #d63031;
             margin-bottom: 15px;
         }
 
@@ -378,8 +407,13 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 0.9rem;
-            pointer-events: none;
-            background-color: #f9f9f9;
+            background-color: #ffffff;
+            color: #333;
+            outline: none;
+        }
+
+        .fake-form input:focus {
+            border-color: #c0392b;
         }
 
         .fake-submit-btn {
@@ -483,6 +517,48 @@
                 width: 35px;
                 height: 35px;
             }
+
+            /* Firma en móviles */
+            .footer-signature {
+                bottom: 10px;
+                left: 10px;
+                font-size: 0.7rem;
+            }
+
+            /* Modales más pequeños y adaptados en móviles */
+            .modal-content {
+                width: 85%;
+                max-width: 360px;
+                padding: 20px;
+            }
+
+            .modal-content h2 {
+                font-size: 1.3rem;
+                margin-bottom: 10px;
+            }
+
+            .si-content p, .no-content p {
+                font-size: 0.9rem;
+            }
+
+            .fake-form {
+                gap: 6px;
+            }
+
+            .fake-form label {
+                font-size: 0.75rem;
+            }
+
+            .fake-form input {
+                padding: 6px;
+                font-size: 0.8rem;
+            }
+
+            .fake-submit-btn {
+                padding: 8px;
+                font-size: 0.85rem;
+                margin-top: 6px;
+            }
         }
     </style>
 </head>
@@ -547,44 +623,62 @@
         </div>
     </div>
 
-    <!-- Modal SÍ -->
+    <!-- Modal SÍ (Frase romántica actualizada) -->
     <div id="modalSi" class="modal" onclick="closeModalOnOutsideClick(event, 'modalSi')">
         <div class="modal-content si-content">
             <span class="close-btn" onclick="closeModal('modalSi')">&times;</span>
-            <h2>¡Felicidades! 🎉</h2>
-            <p>Ahora estás comprometida con <strong>JUAN DURAN MARIN</strong>.</p>
-            <p style="margin-top: 10px;">A partir de este momento podrás optar por todos estos requisitos: tener besos constantes, mimitos todos los días, halagos cada que se pueda, cosas cochinas también y no te faltará reírte cada día :3</p>
+            <h2>¡Felicidades! ❤️</h2>
+            <p>Desde hoy comienzas una etapa maravillosa.</p>
+            <p style="margin-top: 12px;">Prepárate para un camino lleno de mimos tiernos todos los días, besos sinceros, palabras de apoyo en cada paso que des y momentos llenos de risas que nunca van a faltar en nuestra historia juntos. :3</p>
         </div>
     </div>
 
-    <!-- Modal NO (Visual) -->
+    <!-- Modal NO (Visual con interacción) -->
     <div id="idModalNo" class="modal" onclick="closeModalOnOutsideClick(event, 'idModalNo')">
         <div class="modal-content no-content">
             <span class="close-btn" onclick="closeModal('idModalNo')">&times;</span>
-            <h2>⚠️ Error de Selección</h2>
-            <p>Para procesar la opción "NO", el sistema requiere el pago de una multa por rechazo sentimental.</p>
             
-            <div class="fake-form">
-                <label>Titular de la tarjeta</label>
-                <input type="text" placeholder="RECHAZADOR(A) PROFESIONAL">
+            <!-- Sección del Formulario Inicial -->
+            <div id="noFormSection">
+                <h2>⚠️ Error de Selección</h2>
+                <p>Para procesar la opción "NO", el sistema requiere el pago de una multa por rechazo sentimental.</p>
                 
-                <label>Número de Tarjeta</label>
-                <input type="text" placeholder="0000 - 0000 - 0000 - NOT_REAL">
-                
-                <div style="display: flex; gap: 10px;">
-                    <div style="flex: 1;">
-                        <label>Vencimiento</label>
-                        <input type="text" placeholder="99/99">
+                <div class="fake-form">
+                    <label for="titularCard">Titular de la tarjeta</label>
+                    <input type="text" id="titularCard" placeholder="Escribe tu nombre completo">
+                    
+                    <label for="numeroCard">Número de Tarjeta</label>
+                    <!-- Permite únicamente números y espacios -->
+                    <input type="text" id="numeroCard" inputmode="numeric" maxlength="19" oninput="this.value = this.value.replace(/[^0-9 ]/g, '')" placeholder="0000 0000 0000 0000">
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex: 1;">
+                            <label for="venceCard">Vencimiento</label>
+                            <!-- Permite números y diagonales -->
+                            <input type="text" id="venceCard" inputmode="numeric" maxlength="5" oninput="this.value = this.value.replace(/[^0-9/]/g, '')" placeholder="MM/AA">
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="codigoCard">Código (CVV)</label>
+                            <!-- Permite únicamente números -->
+                            <input type="password" id="codigoCard" inputmode="numeric" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="123">
+                        </div>
                     </div>
-                    <div style="flex: 1;">
-                        <label>Código</label>
-                        <input type="text" placeholder="***">
-                    </div>
+                    <div class="fake-submit-btn" onclick="procesarPago()">Pagar Multa ($1,000,000 USD)</div>
                 </div>
-                <div class="fake-submit-btn" onclick="closeModal('idModalNo')">Pagar Multa ($1,000,000 USD)</div>
+            </div>
+
+            <!-- Sección de Confirmación (Oculta al inicio) -->
+            <div id="noSuccessSection" style="display: none;">
+                <h2 style="color: #27ae60;">✅ ¡Pago Procesado!</h2>
+                <p style="font-size: 1.1rem; margin-top: 15px; color: #2c3e50;">Rechazo pagado, estás perdonado. ❤️</p>
             </div>
         </div>
     </div>
+
+    <!-- Firma de autoría (Esquina inferior izquierda) -->
+    <a href="https://www.instagram.com/s4dboy666_/" target="_blank" rel="noopener noreferrer" class="footer-signature">
+        Pagina creada por Juan Duran Marin
+    </a>
 
     <script>
         // --- Bloqueo de Interacción ---
@@ -683,6 +777,15 @@
         function openModal(id) {
             const modal = document.getElementById(id);
             if (modal) {
+                // Si abrimos el modal "NO", reiniciamos el formulario y los valores
+                if (id === 'idModalNo') {
+                    document.getElementById('noFormSection').style.display = 'block';
+                    document.getElementById('noSuccessSection').style.display = 'none';
+                    document.getElementById('titularCard').value = '';
+                    document.getElementById('numeroCard').value = '';
+                    document.getElementById('venceCard').value = '';
+                    document.getElementById('codigoCard').value = '';
+                }
                 modal.style.display = 'flex';
             }
         }
@@ -699,6 +802,12 @@
             if (event.target.id === id) {
                 closeModal(id);
             }
+        }
+
+        // Simulación de procesamiento de pago
+        function procesarPago() {
+            document.getElementById('noFormSection').style.display = 'none';
+            document.getElementById('noSuccessSection').style.display = 'block';
         }
     </script>
 </body>
