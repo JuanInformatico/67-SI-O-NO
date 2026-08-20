@@ -389,43 +389,99 @@
             margin-bottom: 15px;
         }
 
+        /* Estructura mejorada del Formulario */
         .fake-form {
             display: flex;
             flex-direction: column;
-            gap: 10px;
             text-align: left;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 12px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
         }
 
         .fake-form label {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: bold;
-            color: #333;
+            color: #555;
+            margin-bottom: 4px;
+            display: block;
         }
 
         .fake-form input {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 10px 12px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
             font-size: 0.9rem;
-            background-color: #ffffff;
+            background-color: #fafafa;
             color: #333;
             outline: none;
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
         }
 
         .fake-form input:focus {
-            border-color: #c0392b;
+            border-color: #e74c3c;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
         }
 
+        /* Botón de pago estilizado */
         .fake-submit-btn {
             background-color: #e74c3c;
             color: white;
             border: none;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 12px;
+            border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 15px;
             text-align: center;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 6px rgba(231, 76, 60, 0.2);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .fake-submit-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .fake-submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Animación para el mensaje de éxito */
+        .success-icon {
+            font-size: 3.5rem;
+            color: #27ae60;
+            margin-bottom: 15px;
+            animation: bounceIn 0.5s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.1); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         /* ==================== MEDIA QUERIES (RESPONSIVO) ==================== */
@@ -541,23 +597,29 @@
                 font-size: 0.9rem;
             }
 
-            .fake-form {
-                gap: 6px;
+            /* Compactación del formulario en móviles */
+            .form-group {
+                margin-bottom: 8px;
+            }
+
+            .form-row {
+                gap: 10px;
             }
 
             .fake-form label {
                 font-size: 0.75rem;
+                margin-bottom: 2px;
             }
 
             .fake-form input {
-                padding: 6px;
+                padding: 8px 10px;
                 font-size: 0.8rem;
             }
 
             .fake-submit-btn {
-                padding: 8px;
+                padding: 10px;
                 font-size: 0.85rem;
-                margin-top: 6px;
+                margin-top: 10px;
             }
         }
     </style>
@@ -623,7 +685,7 @@
         </div>
     </div>
 
-    <!-- Modal SÍ (Frase romántica actualizada) -->
+    <!-- Modal SÍ -->
     <div id="modalSi" class="modal" onclick="closeModalOnOutsideClick(event, 'modalSi')">
         <div class="modal-content si-content">
             <span class="close-btn" onclick="closeModal('modalSi')">&times;</span>
@@ -633,7 +695,7 @@
         </div>
     </div>
 
-    <!-- Modal NO (Visual con interacción) -->
+    <!-- Modal NO (Visual con interacción adaptada) -->
     <div id="idModalNo" class="modal" onclick="closeModalOnOutsideClick(event, 'idModalNo')">
         <div class="modal-content no-content">
             <span class="close-btn" onclick="closeModal('idModalNo')">&times;</span>
@@ -644,20 +706,24 @@
                 <p>Para procesar la opción "NO", el sistema requiere el pago de una multa por rechazo sentimental.</p>
                 
                 <div class="fake-form">
-                    <label for="titularCard">Titular de la tarjeta</label>
-                    <input type="text" id="titularCard" placeholder="Escribe tu nombre completo">
+                    <div class="form-group">
+                        <label for="titularCard">Titular de la tarjeta</label>
+                        <input type="text" id="titularCard" placeholder="Escribe tu nombre completo">
+                    </div>
                     
-                    <label for="numeroCard">Número de Tarjeta</label>
-                    <!-- Permite únicamente números y espacios -->
-                    <input type="text" id="numeroCard" inputmode="numeric" maxlength="19" oninput="this.value = this.value.replace(/[^0-9 ]/g, '')" placeholder="0000 0000 0000 0000">
+                    <div class="form-group">
+                        <label for="numeroCard">Número de Tarjeta</label>
+                        <!-- Permite únicamente números y espacios -->
+                        <input type="text" id="numeroCard" inputmode="numeric" maxlength="19" oninput="this.value = this.value.replace(/[^0-9 ]/g, '')" placeholder="0000 0000 0000 0000">
+                    </div>
                     
-                    <div style="display: flex; gap: 10px;">
-                        <div style="flex: 1;">
+                    <div class="form-row">
+                        <div class="form-group">
                             <label for="venceCard">Vencimiento</label>
                             <!-- Permite números y diagonales -->
                             <input type="text" id="venceCard" inputmode="numeric" maxlength="5" oninput="this.value = this.value.replace(/[^0-9/]/g, '')" placeholder="MM/AA">
                         </div>
-                        <div style="flex: 1;">
+                        <div class="form-group">
                             <label for="codigoCard">Código (CVV)</label>
                             <!-- Permite únicamente números -->
                             <input type="password" id="codigoCard" inputmode="numeric" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="123">
@@ -669,8 +735,9 @@
 
             <!-- Sección de Confirmación (Oculta al inicio) -->
             <div id="noSuccessSection" style="display: none;">
-                <h2 style="color: #27ae60;">✅ ¡Pago Procesado!</h2>
-                <p style="font-size: 1.1rem; margin-top: 15px; color: #2c3e50;">Rechazo pagado, estás perdonado. ❤️</p>
+                <div class="success-icon">✅</div>
+                <h2>¡Pago Procesado!</h2>
+                <p style="font-size: 1.1rem; margin-top: 10px; color: #2c3e50; line-height: 1.4;">Rechazo pagado, estás perdonado. ❤️</p>
             </div>
         </div>
     </div>
